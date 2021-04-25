@@ -1,20 +1,51 @@
+import { useNavigation, useRoute } from '@react-navigation/core';
 import React from 'react';
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { Button } from '../components/Button';
 import colors from '../styles/colors';
 import fonts from '../styles/fonts';
 
+interface Params {
+  title: string;
+  subtitle: string;
+  buttonTitle: string;
+  icon: 'smile' | 'hug';
+  nextScreen: string;
+}
+
+const emojis = {
+  hug: '🤗',
+  smile: '😄',
+};
+
 export function Confirmation() {
+  const navigation = useNavigation();
+  const route = useRoute();
+
+  const {
+    title,
+    subtitle,
+    buttonTitle,
+    icon,
+    nextScreen,
+  } = route.params as Params;
+
+  function handleMoveOn() {
+    console.log('log ', nextScreen);
+    navigation.navigate('PlantSelect');
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.emoji}>😃</Text>
-        <Text style={styles.title}>Prontinho</Text>
-        <Text style={styles.subTitle}>
-          Agora vamos começar a cuidar das suas plantinhas com muito cuidado.
-        </Text>
+        <Text style={styles.emoji}>{emojis[icon]}</Text>
+
+        <Text style={styles.title}>{title}</Text>
+
+        <Text style={styles.subtitle}>{subtitle}</Text>
+
         <View style={styles.footer}>
-          <Button title="Começar" />
+          <Button title={buttonTitle} onPress={handleMoveOn} />
         </View>
       </View>
     </SafeAreaView>
@@ -28,14 +59,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   content: {
-    width: '100%',
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
     padding: 30,
-  },
-  emoji: {
-    fontSize: 78,
   },
   title: {
     fontSize: 22,
@@ -45,12 +73,15 @@ const styles = StyleSheet.create({
     lineHeight: 38,
     marginTop: 15,
   },
-  subTitle: {
-    fontSize: 17,
+  subtitle: {
     fontFamily: fonts.text,
     textAlign: 'center',
-    color: colors.heading,
+    fontSize: 17,
     paddingVertical: 10,
+    color: colors.heading,
+  },
+  emoji: {
+    fontSize: 78,
   },
   footer: {
     width: '100%',
